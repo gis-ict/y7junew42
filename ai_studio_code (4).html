@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PYTHON.SYS // Phase 2 Schematics — Year 7 Digital Technologies</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&family=IBM+Plex+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --blue:#0a2540; --blue-deep:#061829; --cyan:#22d3ee; --cyan-soft:#7dd3fc;
+  --paper:#0d2a47; --line:rgba(125,211,252,.28); --line-strong:rgba(125,211,252,.6);
+  --ink:#dbeafe; --ink-dim:#7fa8cc; --amber:#fbbf24; --lime:#a3e635;
+  --rose:#fb7185; --white:#eaf4ff;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Space Grotesk',sans-serif; color:var(--ink); background-color:var(--blue);
+  background-image: linear-gradient(var(--line) 1px,transparent 1px), linear-gradient(90deg,var(--line) 1px,transparent 1px), linear-gradient(rgba(125,211,252,.07) 1px,transparent 1px), linear-gradient(90deg,rgba(125,211,252,.07) 1px,transparent 1px);
+  background-size:120px 120px,120px 120px,24px 24px,24px 24px; background-attachment:fixed; line-height:1.6; overflow-x:hidden; -webkit-font-smoothing:antialiased;
+}
+#progress{position:fixed;top:0;left:0;height:4px;background:var(--cyan);width:0;z-index:2000;transition:width .4s ease;box-shadow:0 0 12px var(--cyan)}
+header{ position:sticky;top:0;z-index:1000; display:flex;align-items:stretch;justify-content:space-between; background:rgba(6,24,41,.82);backdrop-filter:blur(10px); border-bottom:1px solid var(--line-strong); }
+.title-block{display:flex;align-items:center;gap:14px;padding:10px 5%;border-right:1px solid var(--line)}
+.stamp{ font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:.62rem;letter-spacing:.18em; color:var(--blue);background:var(--cyan);padding:4px 9px;border-radius:2px;transform:rotate(-3deg) }
+.doc-id{font-family:'Archivo',sans-serif;font-weight:900;font-size:1.05rem;letter-spacing:.04em;color:var(--white)}
+.doc-id small{display:block;font-family:'IBM Plex Mono';font-weight:500;font-size:.6rem;letter-spacing:.22em;color:var(--cyan-soft);margin-top:1px}
+.meter{display:flex;align-items:center;gap:18px;padding:10px 5%}
+.spec{font-family:'IBM Plex Mono';font-size:.62rem;letter-spacing:.14em;color:var(--ink-dim);text-align:right;line-height:1.4}
+.spec b{color:var(--cyan-soft)}
+.xp{ font-family:'IBM Plex Mono';font-weight:700;font-size:.82rem;letter-spacing:.08em;color:var(--blue); background:var(--cyan);padding:7px 16px;border-radius:2px;white-space:nowrap; box-shadow:0 0 0 1px var(--cyan), 0 0 14px rgba(34,211,238,.4) }
+.container{max-width:880px;margin:46px auto 90px;padding:0 22px}
+section{display:none;animation:rise .45s cubic-bezier(.2,.8,.2,1) both}
+section.active{display:block}
+@keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.sheet-head{display:flex;align-items:flex-end;gap:16px;margin-bottom:8px;flex-wrap:wrap}
+.sheet-no{ font-family:'IBM Plex Mono';font-weight:700;font-size:.7rem;letter-spacing:.2em;color:var(--blue); background:var(--cyan-soft);padding:5px 11px;border-radius:2px }
+h1{font-family:'Archivo',sans-serif;font-weight:900;font-size:clamp(1.6rem,4.5vw,2.5rem);line-height:1.05;letter-spacing:-.01em;color:var(--white)}
+h1 .accent{color:var(--cyan)}
+.lead{font-size:1.02rem;color:var(--cyan-soft);max-width:60ch;margin:10px 0 26px;border-left:2px solid var(--line-strong);padding-left:16px}
+.module{ position:relative;background:var(--paper); border:1px solid var(--line-strong);border-radius:4px; padding:26px 26px 22px;margin:22px 0; box-shadow:0 18px 40px -22px #000; }
+.module::before{content:"";position:absolute;inset:6px;border:1px solid var(--line);border-radius:2px;pointer-events:none}
+.mod-label{ position:relative;z-index:1;font-family:'IBM Plex Mono';font-weight:600;font-size:.66rem; letter-spacing:.2em;color:var(--cyan);text-transform:uppercase;margin-bottom:14px; display:flex;align-items:center;gap:8px }
+.mod-label::after{content:"";flex:1;height:1px;background:var(--line)}
+.code{ position:relative;z-index:1;background:var(--blue-deep); border:1px solid var(--line);border-radius:3px; font-family:'IBM Plex Mono',monospace;font-size:.88rem;color:#cfe3f5; margin:6px 0 4px;line-height:1.65;overflow-x:auto; }
+.code-bar{display:flex;align-items:center;gap:7px;padding:9px 14px;border-bottom:1px solid var(--line);background:rgba(34,211,238,.05)}
+.code pre{padding:16px 18px;margin:0;white-space:pre;tab-size:4}
+.comment{color:#5e83a3;font-style:italic}
+.keyword{color:#c792ea;font-weight:600}
+.string{color:#c3e88d}
+.number{color:#f78c6c}
+.function{color:#82aaff}
+.builtin{color:#ffcb6b}
+.note{ position:relative;z-index:1;margin:16px 0 2px;padding:14px 16px 14px 42px; background:rgba(34,211,238,.07);border:1px dashed var(--line-strong);border-radius:3px;font-size:.92rem }
+.note::before{content:"⌖";position:absolute;left:14px;top:12px;color:var(--cyan);font-size:1.1rem}
+.note b{color:var(--cyan-soft)}
+.bench{ position:relative;border:1px solid var(--cyan);border-radius:4px;margin:24px 0 8px; background:linear-gradient(180deg,rgba(34,211,238,.08),rgba(34,211,238,.02));overflow:hidden }
+.bench-head{display:flex;align-items:center;gap:10px;padding:12px 18px;border-bottom:1px solid var(--line); font-family:'IBM Plex Mono';font-weight:600;font-size:.7rem;letter-spacing:.18em;color:var(--cyan);text-transform:uppercase}
+.bench-body{padding:18px}
+.row{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
+.field{flex:1;min-width:180px;background:var(--blue-deep);border:1px solid var(--line-strong); border-radius:3px;color:var(--white);font-family:'IBM Plex Mono';font-size:.95rem;padding:13px 15px;outline:none;transition:.15s}
+.btn{font-family:'IBM Plex Mono';font-weight:700;font-size:.78rem;letter-spacing:.12em;text-transform:uppercase; border:none;border-radius:3px;padding:13px 22px;cursor:pointer;transition:.18s;white-space:nowrap}
+.btn-run{background:var(--cyan);color:var(--blue)}
+.btn-next{background:transparent;color:var(--cyan);border:1px solid var(--cyan);margin-top:26px;width:100%}
+.fb{display:none;margin-top:14px;padding:11px 14px;border-radius:3px;font-family:'IBM Plex Mono';font-size:.82rem;letter-spacing:.04em}
+.fb.ok{display:block;background:rgba(163,230,53,.12);border:1px solid var(--lime);color:var(--lime)}
+.fb.no{display:block;background:rgba(251,113,133,.12);border:1px solid var(--rose);color:var(--rose)}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.opt{font-family:'IBM Plex Mono';font-size:.86rem;text-align:left;background:var(--blue-deep); border:1px solid var(--line-strong);color:var(--ink);padding:12px 14px;border-radius:3px;cursor:pointer;transition:.15s}
+.opt.picked-ok{border-color:var(--lime);color:var(--lime);background:rgba(163,230,53,.1)}
+.opt.picked-no{border-color:var(--rose);color:var(--rose);background:rgba(251,113,133,.1)}
+.trace{display:flex;flex-direction:column;gap:8px;margin-top:14px}
+.trace-step{display:flex;gap:12px;align-items:center;font-family:'IBM Plex Mono';font-size:.85rem; background:var(--blue-deep);border:1px solid var(--line);border-radius:3px;padding:10px 14px;cursor:pointer;transition:.15s}
+.trace-step.revealed{border-color:var(--cyan);background:rgba(34,211,238,0.05)}
+#landing{position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center; text-align:center;padding:24px;background-color:var(--blue-deep); background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px); background-size:34px 34px}
+.btn-boot{font-family:'IBM Plex Mono';font-weight:700;font-size:1rem;letter-spacing:.18em; background:var(--cyan);color:var(--blue);border:none;padding:18px 40px;border-radius:3px;cursor:pointer;transition:.2s; box-shadow:0 0 0 1px var(--cyan),0 0 30px rgba(34,211,238,.5)}
+#done{position:fixed;inset:0;z-index:9998;display:none;flex-direction:column;align-items:center;justify-content:center; text-align:center;padding:24px;background:rgba(6,24,41,.96);backdrop-filter:blur(6px)}
+#done.show{display:flex;animation:rise .5s both}
+</style>
+</head>
+<body>
+
+<div id="landing">
+  <div style="border:1px solid var(--cyan); padding: 8px 18px; color:var(--cyan); font-family: 'IBM Plex Mono'; font-size: .7rem; letter-spacing: .3em; margin-bottom: 26px;">DIGITAL TECHNOLOGIES · YR 7</div>
+  <h1>PYTHON<span style="color:var(--cyan)">.</span>SYS</h1>
+  <p>PHASE 2 SCHEMATICS // BUILDING BLOCKS & LOGIC</p>
+  <button class="btn-boot" onclick="boot()">▸ LOAD BLUEPRINT</button>
+</div>
+
+<div id="done">
+  <div style="border:2px solid var(--cyan); border-radius:6px; padding:38px 44px; max-width:440px; background:var(--paper); position:relative;">
+    <div style="background:var(--cyan); color:var(--blue); font-family:'IBM Plex Mono'; font-weight:700; font-size:.66rem; padding:5px 14px; display:inline-block; margin-bottom:18px;">CERTIFIED // PHASE 2</div>
+    <h2 style="font-family:'Archivo'; font-weight:900; font-size:1.8rem; color:white; margin-bottom:8px;">Blueprint Approved</h2>
+    <div style="font-family:'IBM Plex Mono'; font-size:2.4rem; font-weight:700; color:var(--cyan); margin:14px 0;" id="final-xp">0 PTS</div>
+    <button class="btn-run" onclick="location.reload()">REBOOT SYSTEM</button>
+  </div>
+</div>
+
+<div id="progress"></div>
+<audio id="snd-ok" src="https://assets.mixkit.co/active_storage/sfx/2013/2013-preview.mp3" preload="auto"></audio>
+
+<header>
+  <div class="title-block">
+    <span class="stamp">REV 2</span>
+    <div class="doc-id">PYTHON.SYS<small id="sheet-tag">SHEET 00 / 05</small></div>
+  </div>
+  <div class="meter">
+    <div class="spec">SCALE <b>1:1</b><br>UNIT <b id="unit-tag">CALIBRATION</b></div>
+    <div class="xp" id="xp">000 PTS</div>
+  </div>
+</header>
+
+<div class="container">
+
+<!-- SHEET 00 -->
+<section id="sec-0" class="active">
+  <div class="sheet-head"><span class="sheet-no">SHEET 00</span></div>
+  <h1>System <span class="accent">Calibration</span></h1>
+  <p class="lead">Every engineer checks their parts before building. Let's recap the <b>Phase 1</b> storage containers. Can you spot which one is broken?</p>
+
+  <div class="module">
+    <div class="mod-label">PARTS CATALOGUE // THE CONTAINERS</div>
+    <div class="specsheet" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-bottom: 20px;">
+        <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 4px;">
+            <div style="color: var(--cyan); font-weight: 700;">List [ ]</div>
+            <div style="font-size: 0.8rem; color: var(--ink-dim);">A messy drawer. You can add, remove, and change items anytime.</div>
+        </div>
+        <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 4px;">
+            <div style="color: var(--cyan); font-weight: 700;">Tuple ( )</div>
+            <div style="font-size: 0.8rem; color: var(--ink-dim);">A stone carving. Once you make it, you cannot change a single item!</div>
+        </div>
+    </div>
+    <div class="code">
+        <div class="code-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="code-name">calibration_check.py</span></div>
+<pre>
+<span class="comment"># PROBLEM: Tuples are LOCKED. This code will crash!</span>
+coords = (<span class="number">10</span>, <span class="number">20</span>)
+coords[<span class="number">0</span>] = <span class="number">50</span>  <span class="comment"># 🛑 ERROR! You can't change a Tuple!</span>
+</pre>
+    </div>
+    <div class="note"><b>ICT Logic:</b> Use a <b>List</b> for a shopping cart (items change). Use a <b>Tuple</b> for your Birthday (it never changes!).</div>
+  </div>
+
+  <div class="bench">
+    <div class="bench-head"><span class="led"></span>TEST BENCH 00</div>
+    <div class="bench-body">
+      <p>You have a <b>List</b> of items. Which command "bolts" a new item onto the <b>end</b> of the list?</p>
+      <div class="row">
+        <input class="field" id="a0" placeholder="Type the method name..." autocomplete="off">
+        <button class="btn btn-run" onclick="check('a0','append',15)">▸ RUN TEST</button>
+      </div>
+      <div class="fb" id="fb-a0"></div>
+    </div>
+  </div>
+  <button class="btn btn-next" onclick="nav(1)">SHEET 01 · SETS →</button>
+</section>
+
+<!-- SHEET 01 -->
+<section id="sec-1">
+  <div class="sheet-head"><span class="sheet-no">SHEET 01</span></div>
+  <h1>The <span class="accent">Set</span> — The Unique Bin</h1>
+  <p class="lead">A <b>Set</b> is like a high-security club guest list: <b>No duplicates allowed.</b> If you try to add the same item twice, the set just ignores the second one.</p>
+
+  <div class="module">
+    <div class="mod-label">COMPONENT SPEC // set { }</div>
+    <div class="code">
+<pre>
+<span class="comment"># Build a set with curly braces</span>
+inv = {<span class="string">"Sword"</span>, <span class="string">"Shield"</span>, <span class="string">"Sword"</span>}
+
+<span class="builtin">print</span>(inv) 
+<span class="comment"># Output: {'Sword', 'Shield'}  <-- The extra Sword is gone!</span>
+</pre>
+    </div>
+    <div class="note"><b>Real World Alignment:</b> Think of a set of <b>Unique Usernames</b>. Two people can't have the exact same name, so a Set is perfect for storing them.</div>
+  </div>
+
+  <div class="bench">
+    <div class="bench-head"><span class="led"></span>TEST BENCH 01</div>
+    <div class="bench-body">
+      <p>If you create a set: <span class="q-code">s = {"Red", "Red", "Blue"}</span>. How many items are actually inside the set?</p>
+      <div class="opts">
+        <button class="opt" onclick="pick(this,false,'a1')">3 items</button>
+        <button class="opt" onclick="pick(this,true,'a1',20)">2 items (Duplicates are deleted!)</button>
+      </div>
+      <div class="fb" id="fb-a1"></div>
+    </div>
+  </div>
+  <button class="btn btn-next" onclick="nav(2)">SHEET 02 · DICTIONARIES →</button>
+</section>
+
+<!-- SHEET 02 -->
+<section id="sec-2">
+  <div class="sheet-head"><span class="sheet-no">SHEET 02</span></div>
+  <h1>The <span class="accent">Dictionary</span> — Labeled Storage</h1>
+  <p class="lead">A <b>List</b> is like a stack of boxes you have to count (0, 1, 2...). A <b>Dictionary</b> is a cabinet where every drawer has a <b>Label (Key)</b>.</p>
+
+  <div class="module">
+    <div class="mod-label">ASSEMBLY SPEC // dict { key : value }</div>
+    <div class="code">
+<pre>
+<span class="comment"># RPG Character Data</span>
+player = {
+    <span class="string">"name"</span>: <span class="string">"Ninja"</span>,
+    <span class="string">"hp"</span>: <span class="number">100</span>,
+    <span class="string">"level"</span>: <span class="number">5</span>
+}
+
+<span class="builtin">print</span>(player[<span class="string">"hp"</span>]) <span class="comment"># Result: 100</span>
+</pre>
+    </div>
+    <div class="note"><b>Real World Alignment:</b> Your <b>Phone Contacts</b>. The "Key" is the Name (Alex), and the "Value" is the Number (0412...). You find the number by looking up the name label!</div>
+  </div>
+
+  <div class="bench">
+    <div class="bench-head"><span class="led"></span>TEST BENCH 02</div>
+    <div class="bench-body">
+      <p>In a Dictionary, which symbol connects the <b>Label (Key)</b> to the <b>Data (Value)</b>?</p>
+      <div class="row">
+        <input class="field" id="a2" placeholder="Look at the code above..." autocomplete="off">
+        <button class="btn btn-run" onclick="check('a2',':',20)">▸ RUN TEST</button>
+      </div>
+      <div class="fb" id="fb-a2"></div>
+    </div>
+  </div>
+  <button class="btn btn-next" onclick="nav(3)">SHEET 03 · CONDITIONALS →</button>
+</section>
+
+<!-- SHEET 03 -->
+<section id="sec-3">
+  <div class="sheet-head"><span class="sheet-no">SHEET 03</span></div>
+  <h1>Conditionals — <span class="accent">Decision Gates</span></h1>
+  <p class="lead">Conditionals are like <b>Traffic Lights</b> for your code. Python checks a condition: if it's True, it follows that path. <b>Only one path can win!</b></p>
+
+  <div class="module">
+    <div class="mod-label">CIRCUIT SPEC // if / elif / else</div>
+    <div class="code">
+<pre>
+money = <span class="number">10</span>
+<span class="keyword">if</span> money >= <span class="number">20</span>:
+    <span class="builtin">print</span>(<span class="string">"Buy Game"</span>)
+<span class="keyword">elif</span> money >= <span class="number">10</span>:
+    <span class="builtin">print</span>(<span class="string">"Buy Candy"</span>) <span class="comment"># This path is True!</span>
+<span class="keyword">else</span>:
+    <span class="builtin">print</span>(<span class="string">"Save money"</span>)
+</pre>
+    </div>
+    <div class="note warn"><b>The Gap Rule:</b> Notice the space before <code>print</code>? That's called <b>Indentation</b>. Without that space, Python doesn't know which code belongs to which decision!</div>
+  </div>
+
+  <div class="module">
+    <div class="mod-label">LOGIC TRACE // score = 45</div>
+    <div class="trace">
+      <div class="trace-step" onclick="revealTrace(this, 'false')"><span class="n">1</span><span><code class="q-code">if score > 50:</code> (Is 45 > 50?)</span><span class="res">Click to test ▸</span></div>
+      <div class="trace-step" onclick="revealTrace(this, 'true')"><span class="n">2</span><span><code class="q-code">elif score > 40:</code> (Is 45 > 40?)</span><span class="res">Click to test ▸</span></div>
+      <div class="trace-step" onclick="revealTrace(this, 'skip')"><span class="n">3</span><span><code class="q-code">else:</code> (This is skipped!)</span><span class="res">Click to test ▸</span></div>
+    </div>
+  </div>
+
+  <div class="bench">
+    <div class="bench-head"><span class="led"></span>TEST BENCH 03</div>
+    <div class="bench-body">
+      <p>If Python finds a <b>TRUE</b> path at the top (Gate 1), does it even bother looking at Gate 2 or the Else block?</p>
+      <div class="opts">
+        <button class="opt" onclick="pick(this,false,'a3')">Yes, it checks everything.</button>
+        <button class="opt" onclick="pick(this,true,'a3',20)">No, it stops at the first True path!</button>
+      </div>
+      <div class="fb" id="fb-a3"></div>
+    </div>
+  </div>
+  <button class="btn btn-next" onclick="nav(4)">SHEET 04 · LOOPS →</button>
+</section>
+
+<!-- SHEET 04 -->
+<section id="sec-4">
+  <div class="sheet-head"><span class="sheet-no">SHEET 04</span></div>
+  <h1>Loops — <span class="accent">The Cycle Machine</span></h1>
+  <p class="lead">A loop is like a <b>Washing Machine</b>. It repeats the same action (Wash, Rinse, Spin) until the timer hits zero or a condition is met.</p>
+
+  <div class="module">
+    <div class="mod-label">CONTROL SPEC // break / continue</div>
+    <div class="code">
+<pre>
+<span class="comment"># BREAK = Stop the machine NOW!</span>
+<span class="keyword">for</span> n <span class="keyword">in</span> <span class="builtin">range</span>(<span class="number">10</span>):
+    <span class="keyword">if</span> n == <span class="number">3</span>:
+        <span class="keyword">break</span> <span class="comment"># Machine shuts down here.</span>
+    <span class="builtin">print</span>(n) <span class="comment"># Output: 0, 1, 2</span>
+</pre>
+    </div>
+    <div class="note"><b>ICT Strategy:</b> Use <b>break</b> if you found the item you were looking for and don't need to keep searching. Use <b>continue</b> to skip one "bad" item but keep the loop running.</div>
+  </div>
+
+  <div class="bench">
+    <div class="bench-head"><span class="led"></span>TEST BENCH 04</div>
+    <div class="bench-body">
+      <p>Which loop keyword is the "Emergency Stop" that halts the entire machine instantly?</p>
+      <div class="row">
+        <input class="field" id="a4" placeholder="5 letters..." autocomplete="off">
+        <button class="btn btn-run" onclick="check('a4','break',20)">▸ RUN TEST</button>
+      </div>
+      <div class="fb" id="fb-a4"></div>
+    </div>
+  </div>
+  <button class="btn btn-next" onclick="nav(5)">SHEET 05 · FUNCTIONS →</button>
+</section>
+
+<!-- SHEET 05 -->
+<section id="sec-5">
+  <div class="sheet-head"><span class="sheet-no">SHEET 05</span></div>
+  <h1>Functions — <span class="accent">The Reusable Button</span></h1>
+  <p class="lead">A <b>Function</b> is a block of code you design once and save for later. It's like a <b>Microwave Button</b>. You program it once to "Popcorn," then you just press the button every time you want popcorn.</p>
+
+  <div class="module">
+    <div class="mod-label">MODULE SPEC // def name()</div>
+    <div class="code">
+<pre>
+<span class="comment"># DEFINE the 'Popcorn' button logic</span>
+<span class="keyword">def</span> <span class="function">cook_popcorn</span>():
+    <span class="builtin">print</span>(<span class="string">"Heating..."</span>)
+    <span class="builtin">print</span>(<span class="string">"Pop! Pop! Pop!"</span>)
+
+<span class="comment"># Press the button (Call the function)</span>
+cook_popcorn() 
+</pre>
+    </div>
+    <div class="note"><b>The Power of Modules:</b> Imagine if you had to write 100 lines of code every time your character jumped in a game. Instead, you write it once in a <code>def jump():</code> function and just "call" it when the spacebar is pressed!</div>
+  </div>
+
+  <div class="bench">
+    <div class="bench-head"><span class="led"></span>FINAL TEST</div>
+    <div class="bench-body">
+      <p>What is the 3-letter keyword we use to <b>Define</b> a new reusable module?</p>
+      <div class="row">
+        <input class="field" id="a5" placeholder="Keyword..." autocomplete="off">
+        <button class="btn btn-run" onclick="check('a5','def',30)">▸ FINALIZE</button>
+      </div>
+      <div class="fb" id="fb-a5"></div>
+    </div>
+  </div>
+  <div style="text-align:center; margin-top: 40px;">
+    <button class="btn-boot" onclick="finish()">▸ SUBMIT BLUEPRINT</button>
+  </div>
+</section>
+
+</div>
+
+<script>
+let score = 0; const done = new Set(); const TOTAL_SHEETS = 5;
+const okSound = document.getElementById('snd-ok');
+
+function boot(){
+  document.getElementById('landing').style.opacity = '0';
+  setTimeout(() => document.getElementById('landing').style.display = 'none', 400);
+  okSound.play().then(() => { okSound.pause(); okSound.currentTime = 0; }).catch(()=>{});
+}
+
+function nav(id){
+  document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+  document.getElementById('sec-'+id).classList.add('active');
+  document.getElementById('progress').style.width = (id / TOTAL_SHEETS * 100) + '%';
+  document.getElementById('sheet-tag').textContent = 'SHEET ' + String(id).padStart(2,'0') + ' / 05';
+  const units = ['CALIBRATION','SETS','DICTIONARIES','CONDITIONALS','LOOPS','FUNCTIONS'];
+  document.getElementById('unit-tag').textContent = units[id];
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function award(xp, key){
+  if(done.has(key)) return;
+  done.add(key); score += xp;
+  document.getElementById('xp').textContent = String(score).padStart(3,'0') + ' PTS';
+  okSound.currentTime = 0; okSound.play().catch(() => {});
+}
+
+function check(id, correct, xp){
+  const input = document.getElementById(id);
+  const fb = document.getElementById('fb-'+id);
+  const val = input.value.trim().toLowerCase().replace('()','');
+  if(val === correct.toLowerCase()){
+    fb.className = 'fb ok'; fb.textContent = '✓ PASS · Blueprint verified. +'+xp+' pts';
+    award(xp, id); input.disabled = true;
+  } else {
+    fb.className = 'fb no'; fb.textContent = '✗ FAULT · Incorrect part detected. Try again.';
+  }
+}
+
+function pick(btn, ok, id, xp){
+  const parent = btn.parentElement;
+  if(parent.dataset.locked) return;
+  if(ok){
+    btn.classList.add('picked-ok'); parent.dataset.locked = '1';
+    const fb = document.getElementById('fb-'+id);
+    fb.className = 'fb ok'; fb.textContent = '✓ PASS · Schematic read correctly. +'+xp+' pts';
+    award(xp, id);
+  } else {
+    btn.classList.add('picked-no');
+    setTimeout(() => btn.classList.remove('picked-no'), 700);
+  }
+}
+
+function revealTrace(step, type){
+  if(step.classList.contains('revealed')) return;
+  step.classList.add('revealed');
+  const res = step.querySelector('.res');
+  if(type === 'false') { res.textContent = 'SKIP — Logic is False'; res.style.color = 'var(--rose)'; }
+  if(type === 'true') { res.textContent = 'WINNER — Code runs here ✓'; res.style.color = 'var(--lime)'; }
+  if(type === 'skip') { res.textContent = 'NOT REACHED — Python already stopped'; res.style.color = 'var(--ink-dim)'; }
+}
+
+function finish(){
+  document.getElementById('final-xp').textContent = score + ' PTS';
+  document.getElementById('done').classList.add('show');
+  document.getElementById('progress').style.width = '100%';
+}
+</script>
+</body>
+</html>
